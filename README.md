@@ -11,3 +11,11 @@ https://drive.google.com/drive/folders/1F2RVsVsOEOyq4xUG_taNcqccm5LHH27w?usp=sha
 `merged_w_allCols.csv`: the merged dataset with all columns
 
 *Use `merged_data_tain.csv` for training!!!
+#### Columns in merged_data_tain.csv
+- claimId: The unique sequence number for the claim
+- claimHeadline: the textual content of the claim
+- articleId: the unique sequence number for the article corresponding to the claim
+- articleHeadline: the textual content of the article
+(p.s one claim may have more than one article)
+- claimTruthiness: the TRUE stance for the claim
+- articleStance: the stance of the article
