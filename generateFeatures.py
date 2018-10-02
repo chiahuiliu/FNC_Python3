@@ -16,6 +16,7 @@ def process():
     full_data = pd.read_csv('./data/merged_data_tain.csv', encoding='utf-8')
     used_column = ['claimHeadline', 'articleHeadline', 'claimTruthiness', 'articleStance']
     full_data = full_data[used_column]
+    full_data = full_data.dropna()
     train, test = train_test_split(full_data, test_size=0.33, random_state=1234)
 
     read = False
@@ -34,7 +35,7 @@ def process():
         test_flag = True
         if test_flag:
 
-            data = full_data
+            data = train
             print data
             print 'data.shape:'
             print data.shape
