@@ -20,6 +20,7 @@ class SentimentFeatureGenerator(FeatureGenerator):
         print('for headline')
 
         n_train = df[~df['target'].isnull()].shape[0]
+        print(n_train)
         n_test = df[df['target'].isnull()].shape[0]
 
         # calculate the polarity score of each sentence then take the average
