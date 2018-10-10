@@ -7,11 +7,11 @@ from ngram import NGram
 from nltk import ngrams
 from sklearn.model_selection import train_test_split
 #from CountFeatureGenerator import *
-#from TfidfFeatureGenerator import *
+from TfidfFeatureGenerator import *
 
 #from SvdFeatureGenerator import *
 #from Word2VecFeatureGenerator import *
-from SentimentFeatureGenerator import *
+#from SentimentFeatureGenerator import *
 #from AlignmentFeatureGenerator import *
 
 def process():
@@ -54,32 +54,35 @@ def process():
 
 
     print("generate unigram")
-    data["Headline_unigram"] = data["Headline"].map(lambda x: ' '.join(list(nltk.word_tokenize(x))))
-    data["articleBody_unigram"] = data["articleBody"].map(lambda x: ' '.join(list(nltk.word_tokenize(x))))
+    data["Headline_unigram"] = data["Headline"].map(lambda x: (list(nltk.word_tokenize(x))))
+    data["articleBody_unigram"] = data["articleBody"].map(lambda x: (list(nltk.word_tokenize(x))))
     print(data["Headline_unigram"])
 
     print("generate bigram")
-    data["Headline_bigram"] = data["Headline_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x.split(),2)])
-    data["articleBody_bigram"] = data["articleBody_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x.split(),2)])
+    data["Headline_bigram"] = data["Headline_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x,2)])
+    data["articleBody_bigram"] = data["articleBody_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x,2)])
     print(data["Headline_bigram"])
 
     print("generate trigram")
     join_str = "_"
-    data["Headline_trigram"] = data["Headline_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x.split(),3)])
-    data["articleBody_trigram"] = data["articleBody_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x.split(),3)])
+    data["Headline_trigram"] = data["Headline_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x,3)])
+    data["articleBody_trigram"] = data["articleBody_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x,3)])
     print(data["Headline_trigram"])
 
+    with open('data.pkl', 'wb') as outfile:
+        pickle.dump(data, outfile, -1)
+        print('dataframe saved in data.pkl')
     #return 1
 
     # define feature generators
     #countFG    = CountFeatureGenerator()
-    #tfidfFG    = TfidfFeatureGenerator()
+    tfidfFG    = TfidfFeatureGenerator()
     #svdFG      = SvdFeatureGenerator()
     #word2vecFG = Word2VecFeatureGenerator()
-    sentiFG    = SentimentFeatureGenerator()
+    #sentiFG    = SentimentFeatureGenerator()
     #walignFG   = AlignmentFeatureGenerator()
     #generators = [countFG, tfidfFG, svdFG, word2vecFG, sentiFG]
-    generators = [sentiFG]
+    generators = [tfidfFG]
     #generators = [tfidfFG]
     #generators = [countFG]
     #generators = [walignFG]
