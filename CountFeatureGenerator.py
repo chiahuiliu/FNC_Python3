@@ -1,6 +1,6 @@
 from FeatureGenerator import *
 #import ngram
-import pickle
+import dill as pickle
 import pandas as pd
 from nltk.tokenize import sent_tokenize
 from helpers import *
