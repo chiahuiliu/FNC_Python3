@@ -1,10 +1,10 @@
 import nltk
 import pandas as pd
 import numpy as np
-import pickle
 from helpers import *
 from ngram import NGram
 from nltk import ngrams
+import dill as pickle
 from sklearn.model_selection import train_test_split
 #from CountFeatureGenerator import *
 #from TfidfFeatureGenerator import *
@@ -73,9 +73,12 @@ def process():
     print(data["Headline_trigram"])
 
 
+
     with open('data.pkl', 'wb') as outfile:
         pickle.dump(data, outfile)
         print('dataframe saved in data.pkl')
+
+
     #return 1
 
     # define feature generators
@@ -86,17 +89,16 @@ def process():
     #sentiFG    = SentimentFeatureGenerator()
     #walignFG   = AlignmentFeatureGenerator()
     #generators = [countFG, tfidfFG, svdFG, word2vecFG, sentiFG]
-    generators = [svdFG]
+    #generators = [svdFG]
     #generators = [tfidfFG]
     #generators = [countFG]
     #generators = [walignFG]
 
-    for g in generators:
-        g.process(data)
+    #for g in generators:
+    #    g.process(data)
 
-    for g in generators:
-        g.read('train')
-
+    #for g in generators:
+    #    g.read('train')
     #for g in generators:
     #    g.read('test')
 
