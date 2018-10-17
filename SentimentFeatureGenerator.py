@@ -1,7 +1,7 @@
 from FeatureGenerator import *
 import pandas as pd
 import numpy as np
-import pickle
+import dill as pickle
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.tokenize import sent_tokenize
 from helpers import *
@@ -18,11 +18,16 @@ class SentimentFeatureGenerator(FeatureGenerator):
 
         print('generating sentiment features')
         print('for headline')
-
+        train = df.sample(frac=0.6, random_state=2018)
+        test = df.loc[~df.index.isin(train.index)]
+        n_train = train.shape[0]
+        print(n_train)
+        n_test = test.shape[0]
+        '''
         n_train = df[~df['target'].isnull()].shape[0]
         print(n_train)
         n_test = df[df['target'].isnull()].shape[0]
-
+        '''
         # calculate the polarity score of each sentence then take the average
         sid = SentimentIntensityAnalyzer()
         def compute_sentiment(sentences):
