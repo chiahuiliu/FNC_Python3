@@ -80,14 +80,14 @@ def process():
 
     # define feature generators
     #countFG    = CountFeatureGenerator()
-    #tfidfFG    = TfidfFeatureGenerator()
-    svdFG      = SvdFeatureGenerator()
+    tfidfFG    = TfidfFeatureGenerator()
+    #svdFG      = SvdFeatureGenerator()
     #word2vecFG = Word2VecFeatureGenerator()
     #sentiFG    = SentimentFeatureGenerator()
     #walignFG   = AlignmentFeatureGenerator()
     #generators = [countFG, tfidfFG, svdFG, word2vecFG, sentiFG]
-    generators = [svdFG]
-    #generators = [tfidfFG]
+    #generators = [svdFG]
+    generators = [tfidfFG]
     #generators = [countFG]
     #generators = [walignFG]
 

@@ -86,7 +86,7 @@ class TfidfFeatureGenerator(FeatureGenerator):
 
 
         # 4). compute cosine similarity between headline tfidf features and body tfidf features
-        simTfidf = np.asarray(map(cosine_sim, xHeadlineTfidf, xBodyTfidf))[:, np.newaxis]
+        simTfidf = np.asarray(list(map(cosine_sim, xHeadlineTfidf, xBodyTfidf)))[:, np.newaxis]
         print('simTfidf.shape:')
         print(simTfidf.shape)
         simTfidfTrain = simTfidf[:n_train]
