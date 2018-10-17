@@ -7,7 +7,7 @@ from ngram import NGram
 from nltk import ngrams
 from sklearn.model_selection import train_test_split
 #from CountFeatureGenerator import *
-from TfidfFeatureGenerator import *
+#from TfidfFeatureGenerator import *
 
 #from SvdFeatureGenerator import *
 #from Word2VecFeatureGenerator import *
@@ -23,17 +23,20 @@ def process():
     full_data['Headline'] = full_data['claimHeadline'].apply(lambda x: x[8:])
     full_data['articleBody'] = full_data['articleHeadline']
     full_data['Body ID'] = full_data['articleId']
-    full_data['target'] = np.nan
-    train, test = train_test_split(full_data, test_size=0.33, random_state=1234)
-
     targets = ['observing', 'for', 'against', 'ignoring']
     targets_dict = dict(zip(targets, range(len(targets))))
-    train['target'] = map(lambda x: targets_dict[x], train['articleStance'])
+    full_data['target'] = map(lambda x: targets_dict[x], full_data['articleStance'])
+
+    train = full_data.sample(frac=0.6, random_state=2018)
+    test = full_data.loc[~full_data.index.isin(train.index)]
+
+
     print('train.shape:')
     print(train.shape)
     n_train = train.shape[0]
 
-    data = train
+
+    data = full_data
     test_flag = True
     if test_flag:
 
@@ -47,7 +50,7 @@ def process():
         print('train.shape:')
         print(train.shape)
 
-        test = data[data['target'].isnull()]
+        test = test
         print(test)
         print('test.shape:')
         print(test.shape)
@@ -69,20 +72,21 @@ def process():
     data["articleBody_trigram"] = data["articleBody_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x,3)])
     print(data["Headline_trigram"])
 
+
     with open('data.pkl', 'wb') as outfile:
-        pickle.dump(data, outfile, -1)
+        pickle.dump(data, outfile)
         print('dataframe saved in data.pkl')
     #return 1
 
     # define feature generators
     #countFG    = CountFeatureGenerator()
-    tfidfFG    = TfidfFeatureGenerator()
+    #tfidfFG    = TfidfFeatureGenerator()
     #svdFG      = SvdFeatureGenerator()
     #word2vecFG = Word2VecFeatureGenerator()
     #sentiFG    = SentimentFeatureGenerator()
     #walignFG   = AlignmentFeatureGenerator()
     #generators = [countFG, tfidfFG, svdFG, word2vecFG, sentiFG]
-    generators = [tfidfFG]
+    generators = [svdFG]
     #generators = [tfidfFG]
     #generators = [countFG]
     #generators = [walignFG]
