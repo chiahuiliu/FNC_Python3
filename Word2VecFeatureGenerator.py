@@ -1,7 +1,7 @@
 from FeatureGenerator import *
 import pandas as pd
 import numpy as np
-import pickle
+import dill as pickle
 import gensim
 from sklearn.preprocessing import normalize
 from functools import reduce
@@ -21,11 +21,18 @@ class Word2VecFeatureGenerator(FeatureGenerator):
         df["Headline_unigram_vec"] = df["Headline"].map(lambda x: preprocess_data(x, exclude_stopword=False, stem=False))
         df["articleBody_unigram_vec"] = df["articleBody"].map(lambda x: preprocess_data(x, exclude_stopword=False, stem=False))
 
+        train = df.sample(frac=0.6, random_state=2018)
+        test = df.loc[~df.index.isin(train.index)]
+        n_train = train.shape[0]
+        print('Word2VecFeatureGenerator, n_train:',n_train)
+        n_test = test.shape[0]
+        print('Word2VecFeatureGenerator, n_test:',n_test)
+        '''
         n_train = df[~df['target'].isnull()].shape[0]
         print('Word2VecFeatureGenerator: n_train:',n_train)
         n_test = df[df['target'].isnull()].shape[0]
         print('Word2VecFeatureGenerator: n_test:',n_test)
-
+        '''
         # 1). document vector built by multiplying together all the word vectors
         # using Google's pre-trained word vectors
         #model = gensim.models.Word2Vec.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)

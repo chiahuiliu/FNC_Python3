@@ -20,6 +20,7 @@ class TfidfFeatureGenerator(FeatureGenerator):
             res = '%s %s' % (' '.join(x['Headline_unigram']), ' '.join(x['articleBody_unigram']))
             return res
         df["all_text"] = list(df.apply(cat_text, axis=1))
+<<<<<<< HEAD
         train = df.sample(frac=0.6, random_state=2018)
         test = df.loc[~df.index.isin(train.index)]
 
@@ -31,6 +32,12 @@ class TfidfFeatureGenerator(FeatureGenerator):
         print('tfidf, n_train:',n_train)
         n_test = df[df['target'].isnull()].shape[0]
         print('tfidf, n_test:',n_test)"""
+=======
+        n_train = df[~df['target'].isnull()].shape[0]
+        print( 'tfidf, n_train:',n_train)
+        n_test = df[df['target'].isnull()].shape[0]
+        print( 'tfidf, n_test:',n_test)
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
 
         # 2). fit a TfidfVectorizer on the concatenated strings
         # 3). sepatately transform ' '.join(Headline_unigram) and ' '.join(articleBody_unigram)
@@ -40,7 +47,11 @@ class TfidfFeatureGenerator(FeatureGenerator):
 
         vecH = TfidfVectorizer(ngram_range=(1, 3), max_df=0.8, min_df=2, vocabulary=vocabulary)
         xHeadlineTfidf = vecH.fit_transform(df['Headline_unigram'].map(lambda x: ' '.join(x))) # use ' '.join(Headline_unigram) instead of Headline since the former is already stemmed
+<<<<<<< HEAD
         print('xHeadlineTfidf.shape:')
+=======
+        print( 'xHeadlineTfidf.shape:')
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
         print(xHeadlineTfidf.shape)
 
         # save train and test into separate files
@@ -48,7 +59,11 @@ class TfidfFeatureGenerator(FeatureGenerator):
         outfilename_htfidf_train = "train.headline.tfidf.pkl"
         with open(outfilename_htfidf_train, "wb") as outfile:
             pickle.dump(xHeadlineTfidfTrain, outfile, -1)
+<<<<<<< HEAD
         print('headline tfidf features of training set saved in ', outfilename_htfidf_train)
+=======
+        print ('headline tfidf features of training set saved in %s' % outfilename_htfidf_train)
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
 
         if n_test > 0:
             # test set is available
@@ -56,20 +71,33 @@ class TfidfFeatureGenerator(FeatureGenerator):
             outfilename_htfidf_test = "test.headline.tfidf.pkl"
             with open(outfilename_htfidf_test, "wb") as outfile:
                 pickle.dump(xHeadlineTfidfTest, outfile, -1)
+<<<<<<< HEAD
             print('headline tfidf features of test set saved in ', outfilename_htfidf_test)
+=======
+            print ('headline tfidf features of test set saved in %s' % outfilename_htfidf_test)
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
 
 
         vecB = TfidfVectorizer(ngram_range=(1, 3), max_df=0.8, min_df=2, vocabulary=vocabulary)
         xBodyTfidf = vecB.fit_transform(df['articleBody_unigram'].map(lambda x: ' '.join(x)))
+<<<<<<< HEAD
         print('xBodyTfidf.shape:')
         print(xBodyTfidf.shape)
+=======
+        print ('xBodyTfidf.shape:')
+        print (xBodyTfidf.shape)
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
 
         # save train and test into separate files
         xBodyTfidfTrain = xBodyTfidf[:n_train, :]
         outfilename_btfidf_train = "train.body.tfidf.pkl"
         with open(outfilename_btfidf_train, "wb") as outfile:
             pickle.dump(xBodyTfidfTrain, outfile, -1)
+<<<<<<< HEAD
         print('body tfidf features of training set saved in ', outfilename_btfidf_train)
+=======
+        print ('body tfidf features of training set saved in %s' % outfilename_btfidf_train)
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
 
         if n_test > 0:
             # test set is availble
@@ -77,18 +105,31 @@ class TfidfFeatureGenerator(FeatureGenerator):
             outfilename_btfidf_test = "test.body.tfidf.pkl"
             with open(outfilename_btfidf_test, "wb") as outfile:
                 pickle.dump(xBodyTfidfTest, outfile, -1)
+<<<<<<< HEAD
             print('body tfidf features of test set saved in ', outfilename_btfidf_test)
+=======
+            print ('body tfidf features of test set saved in %s' % outfilename_btfidf_test)
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
 
 
         # 4). compute cosine similarity between headline tfidf features and body tfidf features
         simTfidf = np.asarray(map(cosine_sim, xHeadlineTfidf, xBodyTfidf))[:, np.newaxis]
+<<<<<<< HEAD
         print('simTfidf.shape:')
         print(simTfidf.shape)
+=======
+        print( 'simTfidf.shape:')
+        print( simTfidf.shape)
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
         simTfidfTrain = simTfidf[:n_train]
         outfilename_simtfidf_train = "train.sim.tfidf.pkl"
         with open(outfilename_simtfidf_train, "wb") as outfile:
             pickle.dump(simTfidfTrain, outfile, -1)
+<<<<<<< HEAD
         print('tfidf sim. features of training set saved in ', outfilename_simtfidf_train)
+=======
+        print( 'tfidf sim. features of training set saved in %s' % outfilename_simtfidf_train)
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
 
         if n_test > 0:
             # test set is available
@@ -96,7 +137,11 @@ class TfidfFeatureGenerator(FeatureGenerator):
             outfilename_simtfidf_test = "test.sim.tfidf.pkl"
             with open(outfilename_simtfidf_test, "wb") as outfile:
                 pickle.dump(simTfidfTest, outfile, -1)
+<<<<<<< HEAD
             print('tfidf sim. features of test set saved in ', outfilename_simtfidf_test)
+=======
+            print ('tfidf sim. features of test set saved in %s' % outfilename_simtfidf_test)
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
 
         return 1
 
@@ -115,6 +160,7 @@ class TfidfFeatureGenerator(FeatureGenerator):
         with open(filename_simtfidf, "rb") as infile:
             simTfidf = pickle.load(infile)
 
+<<<<<<< HEAD
         print('xHeadlineTfidf.shape:')
         print(xHeadlineTfidf.shape)
         #print type(xHeadlineTfidf)
@@ -123,6 +169,16 @@ class TfidfFeatureGenerator(FeatureGenerator):
         #print type(xBodyTfidf)
         print('simTfidf.shape:')
         print(simTfidf.shape)
+=======
+        print( 'xHeadlineTfidf.shape:')
+        print (xHeadlineTfidf.shape)
+        #print type(xHeadlineTfidf)
+        print ('xBodyTfidf.shape:')
+        print (xBodyTfidf.shape)
+        #print type(xBodyTfidf)
+        print ('simTfidf.shape:')
+        print (simTfidf.shape)
+>>>>>>> 2b12251f3aded4f9d9e754b9852084cf634d6f49
         #print type(simTfidf)
 
         #return [xHeadlineTfidf, xBodyTfidf, simTfidf.reshape(-1, 1)]
