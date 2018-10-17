@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 #from CountFeatureGenerator import *
 #from TfidfFeatureGenerator import *
 
-#from SvdFeatureGenerator import *
+from SvdFeatureGenerator import *
 #from Word2VecFeatureGenerator import *
 #from SentimentFeatureGenerator import *
 #from AlignmentFeatureGenerator import *
@@ -84,23 +84,23 @@ def process():
     # define feature generators
     #countFG    = CountFeatureGenerator()
     #tfidfFG    = TfidfFeatureGenerator()
-    #svdFG      = SvdFeatureGenerator()
+    svdFG      = SvdFeatureGenerator()
     #word2vecFG = Word2VecFeatureGenerator()
     #sentiFG    = SentimentFeatureGenerator()
     #walignFG   = AlignmentFeatureGenerator()
     #generators = [countFG, tfidfFG, svdFG, word2vecFG, sentiFG]
-    #generators = [svdFG]
+    generators = [svdFG]
     #generators = [tfidfFG]
     #generators = [countFG]
     #generators = [walignFG]
 
-    #for g in generators:
-    #    g.process(data)
+    for g in generators:
+        g.process(data)
 
-    #for g in generators:
-    #    g.read('train')
-    #for g in generators:
-    #    g.read('test')
+    for g in generators:
+        g.read('train')
+    for g in generators:
+        g.read('test')
 
     print('done')
 
