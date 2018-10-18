@@ -80,7 +80,7 @@ class SvdFeatureGenerator(FeatureGenerator):
                 pickle.dump(xBodySvdTest, outfile, -1)
             print('body svd features of test set saved in ' + str(outfilename_bsvd_test))
 
-        simSvd = np.asarray(map(cosine_sim, xHeadlineSvd, xBodySvd))[:, np.newaxis]
+        simSvd = np.asarray(list(map(cosine_sim, xHeadlineSvd, xBodySvd)))[:, np.newaxis]
         print('simSvd.shape:')
         print(simSvd.shape)
 

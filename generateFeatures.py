@@ -1,18 +1,16 @@
 import nltk
 import pandas as pd
 import numpy as np
-import pickle
 from helpers import *
-from ngram import NGram
 from nltk import ngrams
+import dill as pickle
 from sklearn.model_selection import train_test_split
-#from CountFeatureGenerator import *
+from CountFeatureGenerator import *
 from TfidfFeatureGenerator import *
-
 from SvdFeatureGenerator import *
-#from Word2VecFeatureGenerator import *
-#from SentimentFeatureGenerator import *
-#from AlignmentFeatureGenerator import *
+from Word2VecFeatureGenerator import *
+from SentimentFeatureGenerator import *
+
 
 def process():
 
@@ -73,21 +71,27 @@ def process():
     print(data["Headline_trigram"])
 
 
+
     with open('data.pkl', 'wb') as outfile:
         pickle.dump(data, outfile)
         print('dataframe saved in data.pkl')
+
+
     #return 1
 
     # define feature generators
-    #countFG    = CountFeatureGenerator()
+    countFG    = CountFeatureGenerator()
     tfidfFG    = TfidfFeatureGenerator()
-    #svdFG      = SvdFeatureGenerator()
-    #word2vecFG = Word2VecFeatureGenerator()
-    #sentiFG    = SentimentFeatureGenerator()
-    #walignFG   = AlignmentFeatureGenerator()
-    #generators = [countFG, tfidfFG, svdFG, word2vecFG, sentiFG]
-    #generators = [svdFG]
-    generators = [tfidfFG]
+    svdFG      = SvdFeatureGenerator()
+    word2vecFG = Word2VecFeatureGenerator()
+    sentiFG    = SentimentFeatureGenerator()
+
+    generators = [countFG, tfidfFG, svdFG, word2vecFG, sentiFG]
+    ###########################################################
+    #Be sure you run the tfidf again to generate the similarity
+    ###########################################################
+    #generators = [tfidfFG, svdFG]
+    #generators = [tfidfFG]
     #generators = [countFG]
     #generators = [walignFG]
 

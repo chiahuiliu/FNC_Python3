@@ -130,9 +130,10 @@ class TfidfFeatureGenerator(FeatureGenerator):
         print(simTfidf.shape)
 
         #print type(simTfidf)
-
-        #return [xHeadlineTfidf, xBodyTfidf, simTfidf.reshape(-1, 1)]
-        return [simTfidf.reshape(-1, 1)]
+        # uncomment the below one to generate svd
+        return [xHeadlineTfidf, xBodyTfidf, simTfidf.reshape(-1, 1)]
+        # uncommet the below one to generate tfidf similarity
+        #return [simTfidf.reshape(-1, 1)]
 
  #   Copyright 2017 Cisco Systems, Inc.
  #
