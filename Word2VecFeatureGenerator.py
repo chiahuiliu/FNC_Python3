@@ -56,8 +56,7 @@ class Word2VecFeatureGenerator(FeatureGenerator):
         print(headlineVec)
         print('type(headlineVec)')
         print(type(headlineVec))
-        #headlineVec = np.exp(headlineVec)
-        #print(list(headlineVec))
+
         headlineVec = normalize(np.array(list(headlineVec)))
         print('headlineVec')
         print(headlineVec)
