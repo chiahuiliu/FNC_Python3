@@ -1,5 +1,10 @@
 # claim_checking_Fall2018
-This is the repo for claim checking group in 2018 Fall
+This is the Fall 2018 repo for the evaluation metric subproject within the Claim Checking Group at UT Austin.
+
+### Dev Environment
+Please download Anaconda, and create a Python3 virtual evironment with the packages listed below. Here's a handy cheat sheet for creating and using Anaconda virtual environment.
+https://conda.io/docs/_downloads/conda-cheatsheet.pdf
+
 
 ### For data, please download the data here
 https://drive.google.com/drive/folders/1F2RVsVsOEOyq4xUG_taNcqccm5LHH27w?usp=sharing
