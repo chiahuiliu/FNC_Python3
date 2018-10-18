@@ -10,7 +10,6 @@ from SvdFeatureGenerator import *
 from Word2VecFeatureGenerator import *
 from SentimentFeatureGenerator import *
 #from AlignmentFeatureGenerator import *
-from nltk import bigrams
 
 def process():
 
