@@ -25,12 +25,19 @@ https://drive.google.com/drive/folders/1F2RVsVsOEOyq4xUG_taNcqccm5LHH27w?usp=sha
 `merge_csv.py`: merge all the test & training data from the fake news challenge dataset, and then merge it with the Emergent dataset.
 
 `fnc_data.csv`: the merged data for "Fake News Challenge"
+
 `merged_w_allCols.csv`: the merged dataset with all columns
+
 `CountFeatureGenerator.py`: Count occurrences of selected words in the data files
+
 `SentimentFeatureGenerator.py`: Using nltk's sentiment analysis tools, this file calculates the sentiments (compound, negative, neutral, positive) for each training example and returns the probability of each sentiment from the training data.
+
 `TfidfFeatureGenerator.py`: Calculates the tfidf score (https://en.wikipedia.org/wiki/Tf%E2%80%93idf) for each claimHeadline and articleHeadline.
+
 `SvdFeatureGenerator.py`: Using the similarity score calculated from tfidf and SVD (Singular Value Decomposition) from the sklearn package, this file returns the SVD vector for claimHeadlines and articleHeadlines.
+
 `Word2VecFeatureGenerator.py`: This file returns the Word2Vec (https://en.wikipedia.org/wiki/Word2vec) representation from the claimHeadline and articleHeadline as well as the cosine similarity vectors between each articleHeadline and claimHeadline.
+
 `generateFeatures.py`: Driver for feature generation. Calculates the unigram, bigram, and trigram features, and also generates the features from files listed above.
 
 *Use `merged_data_tain.csv` for training!!!
