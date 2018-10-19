@@ -21,6 +21,9 @@ https://conda.io/docs/_downloads/conda-cheatsheet.pdf
 ### For data, please download the data here
 https://drive.google.com/drive/folders/1F2RVsVsOEOyq4xUG_taNcqccm5LHH27w?usp=sharing
 
+### Code Flow Image
+<img src="https://github.com/chiahuiliu/claim_checking_Fall2018/blob/feature_generation/claim_check_codeFlow.png"/>
+
 ### File explanations
 `merge_csv.py`: merge all the test & training data from the fake news challenge dataset, and then merge it with the Emergent dataset.
 
