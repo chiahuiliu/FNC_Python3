@@ -26,7 +26,7 @@ def build_data():
     data['Body ID'] = data['articleId']
     targets = ['observing', 'for', 'against', 'ignoring']
     targets_dict = dict(zip(targets, range(len(targets))))
-    data['target'] = (map(lambda x: targets_dict[x], data['articleStance']))
+    data['target'] = list(map(lambda x: targets_dict[x], data['articleStance']))
     #data['target'] = data['target'].astype(int)
 
     train = data.sample(frac=0.6, random_state=2018)
@@ -54,11 +54,8 @@ def build_data():
     print('body_ids.shape')
     print(data['Body ID'].values.shape)
 
-    #with open('data_new.pkl', 'wb') as outfile:
-    #    cPickle.dump(data_x, outfile, -1)
-    #    print 'data saved in data_new.pkl'
 
-    return data_x, data_y, data['Body ID'].values
+    return data_x, data_y, data['Body ID'].values, test[['target', 'Headline', 'Body ID']]
 
 def build_test_data():
 
@@ -73,7 +70,7 @@ def build_test_data():
     data['Body ID'] = data['articleId']
     targets = ['observing', 'for', 'against', 'ignoring']
     targets_dict = dict(zip(targets, range(len(targets))))
-    data['target'] = (map(lambda x: targets_dict[x], data['articleStance']))
+    data['target'] = list(map(lambda x: targets_dict[x], data['articleStance']))
 
 
     train = data.sample(frac=0.6, random_state=2018)
@@ -143,7 +140,8 @@ def eval_metric(yhat, dtrain):
 
 def train():
 
-    data_x, data_y, body_ids = build_data()
+    data_x, data_y, body_ids, target_stance = build_data()
+    print(data_x, data_y, body_ids, target_stance)
     # read test data
     test_x, body_ids_test = build_test_data()
     '''
@@ -160,7 +158,7 @@ def train():
     #dtest = xgb.DMatrix(test_x)
     #watchlist = [(dtrain, 'train')]
     bst = svm_FNC.fit(data_x, data_y)
-    joblib.dump(bst, 'svm_cluster_train_takeout4.pkl')
+    joblib.dump(bst, 'svm_cluster_train.pkl')
     #bst = joblib.load('svm_cluster_train_tfidf.pkl')
     '''
     bst = xgb.train(params_xgb,
@@ -173,7 +171,7 @@ def train():
     #pred_y = bst.predict(dtest) # output: label, not probabilities
     #pred_y = bst.predict(dtrain) # output: label, not probabilities
     pred_y = bst.predict(test_x)
-    print(pred_y)
+    print(len(pred_y))
     '''pred_prob_y = pred_y.reshape((len(test_x), 4)) # predicted probabilities
     #pred_y = np.asarray((pred_prob_y))
     print('pred_y.shape:')
@@ -182,18 +180,14 @@ def train():
 
     # save (id, predicted and probabilities) to csv, for model averaging
     #stances = pd.read_csv("test_stances_unlabeled_processed.csv") # same row order as predicted
-    stances = pd.read_csv("test_stances_unlabeled.csv")
+    stances = target_stance
 
     df_output = pd.DataFrame()
     df_output['Headline'] = stances['Headline']
     df_output['Body ID'] = stances['Body ID']
+
     df_output['Stance'] = predicted
-    '''
-    df_output['prob_0'] = pred_prob_y[:, 0]
-    df_output['prob_1'] = pred_prob_y[:, 1]
-    df_output['prob_2'] = pred_prob_y[:, 2]
-    df_output['prob_3'] = pred_prob_y[:, 3]
-    '''
+
     #df_output.to_csv('submission.csv', index=False)
     df_output.to_csv('tree_pred_prob_cor2.csv', index=False)
     df_output[['Headline','Body ID','Stance']].to_csv('tree_pred_cor2.csv', index=False)
@@ -201,13 +195,7 @@ def train():
     print(df_output)
     print(Counter((df_output['Stance'])))
 
-    #pred_train = bst.predict(dtrain).reshape(data_x.shape[0], 4)
-    #pred_t = np.argmax(pred_train, axis=1)
-    #predicted_t = [LABELS[int(a)] for a in pred_t]
-    #print(Counter(predicted_t))
 
 if __name__ == '__main__':
-    #build_test_data()
-    #cv()
     svm_FNC = svm.SVC(kernel='linear', decision_function_shape='ovo', random_state= 2018)
     train()

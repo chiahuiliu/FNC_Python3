@@ -131,7 +131,7 @@ class TfidfFeatureGenerator(FeatureGenerator):
 
         #print type(simTfidf)
         # uncomment the below one to generate svd
-        # return [xHeadlineTfidf, xBodyTfidf, simTfidf.reshape(-1, 1)]
+        #return [xHeadlineTfidf, xBodyTfidf, simTfidf.reshape(-1, 1)]
         # uncommet the below one to generate tfidf similarity
         return [simTfidf.reshape(-1, 1)]
 

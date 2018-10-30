@@ -47,8 +47,8 @@ def cosine_sim(x, y):
         d = cosine_similarity(x, y)
         d = d[0][0]
     except:
-        print x
-        print y
+        print(x)
+        print(y)
         d = 0.
     return d
 

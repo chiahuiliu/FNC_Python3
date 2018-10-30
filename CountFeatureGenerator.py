@@ -24,14 +24,14 @@ class CountFeatureGenerator(FeatureGenerator):
                 df["count_of_unique_%s_%s" % (feat_name, gram)] = \
 		            list(df.apply(lambda x: len(set(x[feat_name + "_" + gram])), axis=1))
                 df["ratio_of_unique_%s_%s" % (feat_name, gram)] = \
-                    map(try_divide, df["count_of_unique_%s_%s"%(feat_name,gram)], df["count_of_%s_%s"%(feat_name,gram)])
+                    list(map(try_divide, df["count_of_unique_%s_%s"%(feat_name,gram)], df["count_of_%s_%s"%(feat_name,gram)]))
 
         # overlapping n-grams count
         for gram in grams:
             df["count_of_Headline_%s_in_articleBody" % gram] = \
                 list(df.apply(lambda x: sum([1. for w in x["Headline_" + gram] if w in set(x["articleBody_" + gram])]), axis=1))
             df["ratio_of_Headline_%s_in_articleBody" % gram] = \
-                map(try_divide, df["count_of_Headline_%s_in_articleBody" % gram], df["count_of_Headline_%s" % gram])
+                list(map(try_divide, df["count_of_Headline_%s_in_articleBody" % gram], df["count_of_Headline_%s" % gram]))
 
         # number of sentences in headline and body
         for feat_name in feat_names:
