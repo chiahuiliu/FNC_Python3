@@ -2,11 +2,13 @@ import nltk
 import pandas as pd
 import numpy as np
 from helpers import *
+from ngram import NGram
 from nltk import ngrams
 import dill as pickle
 from sklearn.model_selection import train_test_split
 from CountFeatureGenerator import *
 from TfidfFeatureGenerator import *
+
 from SvdFeatureGenerator import *
 from Word2VecFeatureGenerator import *
 from SentimentFeatureGenerator import *
@@ -21,9 +23,11 @@ def process():
     full_data['Headline'] = full_data['claimHeadline'].apply(lambda x: x[8:])
     full_data['articleBody'] = full_data['articleHeadline']
     full_data['Body ID'] = full_data['articleId']
-    targets = ['observing', 'for', 'against', 'ignoring']
+    #targets = ['observing', 'for', 'against', 'ignoring']
+    targets = ['unknown', 'false', 'true']
     targets_dict = dict(zip(targets, range(len(targets))))
-    full_data['target'] = map(lambda x: targets_dict[x], full_data['articleStance'])
+    #full_data['target'] = str(map(lambda x: targets_dict[x], full_data['articleStance']))
+    full_data['target'] = str(map(lambda x: targets_dict[x], full_data['claimTruthiness']))
 
     train = full_data.sample(frac=0.6, random_state=2018)
     test = full_data.loc[~full_data.index.isin(train.index)]
@@ -80,19 +84,19 @@ def process():
     #return 1
 
     # define feature generators
-    countFG    = CountFeatureGenerator()
+    countFG    = CountFeatureGenerator() # done
     tfidfFG    = TfidfFeatureGenerator()
     svdFG      = SvdFeatureGenerator()
     word2vecFG = Word2VecFeatureGenerator()
-    sentiFG    = SentimentFeatureGenerator()
-
-    generators = [countFG, tfidfFG, svdFG, word2vecFG, sentiFG]
+    sentiFG    = SentimentFeatureGenerator() # done
+    #walignFG   = AlignmentFeatureGenerator()
+    #generators = [countFG, tfidfFG, svdFG, word2vecFG, sentiFG]
     ###########################################################
     #Be sure you run the tfidf again to generate the similarity
     ###########################################################
-    #generators = [tfidfFG, svdFG]
+    generators = [countFG]
     #generators = [tfidfFG]
-    #generators = [countFG]
+    #generators = [sentiFG]
     #generators = [walignFG]
 
     for g in generators:
