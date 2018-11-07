@@ -13,6 +13,7 @@ from SvdFeatureGenerator import *
 from Word2VecFeatureGenerator import *
 from SentimentFeatureGenerator import *
 from score import *
+import score
 import joblib
 from sklearn.metrics import confusion_matrix
 
@@ -25,11 +26,9 @@ def build_data():
     data['Headline'] = data['claimHeadline'].apply(lambda x: x[8:])
     data['articleBody'] = data['articleHeadline']
     data['Body ID'] = data['articleId']
-    #targets = ['observing', 'for', 'against', 'ignoring']
     targets =['unknown', 'false', 'true']
     targets_dict = dict(zip(targets, range(len(targets))))
     data['target'] = list(map(lambda x: targets_dict[x], data['claimTruthiness']))
-    #data['target'] = data['target'].astype(int)
 
     train = data.sample(frac=0.6, random_state=2018)
     test = data.loc[~data.index.isin(train.index)]
@@ -43,7 +42,6 @@ def build_data():
                   SvdFeatureGenerator(),
                   Word2VecFeatureGenerator(),
                   SentimentFeatureGenerator()
-                  #AlignmentFeatureGenerator()
                  ]
     features = [f for g in generators for f in g.read('train')]
 
@@ -70,7 +68,6 @@ def build_test_data():
     data['Headline'] = data['claimHeadline'].apply(lambda x: x[8:])
     data['articleBody'] = data['articleHeadline']
     data['Body ID'] = data['articleId']
-    #targets = ['observing', 'for', 'against', 'ignoring']
     targets =['unknown', 'false', 'true']
     targets_dict = dict(zip(targets, range(len(targets))))
     data['target'] = list(map(lambda x: targets_dict[x], data['claimTruthiness']))
@@ -79,11 +76,6 @@ def build_test_data():
     train = data.sample(frac=0.6, random_state=2018)
     test = data.loc[~data.index.isin(train.index)]
 
-    '''
-    body = pd.read_csv("test_bodies.csv")
-    stances = pd.read_csv("test_stances_unlabeled.csv") # needs to contain pair id
-    data = pd.merge(stances, body, how='left', on='Body ID')
-    '''
     # read features
     generators = [
                   CountFeatureGenerator(),
@@ -106,40 +98,6 @@ def build_test_data():
                    # pair id
     return data_x, test['Body ID'].values, test['target']
 
-def fscore(pred_y, truth_y):
-
-    # targets = ['agree', 'disagree', 'discuss', 'unrelated']
-    # y = [0, 1, 2, 3]
-    score = 0
-    if pred_y.shape != truth_y.shape:
-        raise Exception('pred_y and truth have different shapes')
-    for i in range(pred_y.shape[0]):
-        if truth_y[i] == 3:
-            if pred_y[i] == 3: score += 0.25
-        else:
-            if pred_y[i] != 3: score += 0.25
-            if truth_y[i] == pred_y[i]: score += 0.75
-
-    return score
-
-def perfect_score(truth_y):
-
-    score = 0
-    for i in range(truth_y.shape[0]):
-        if truth_y[i] == 3: score += 0.25
-        else: score += 1
-
-    return score
-
-def eval_metric(yhat, dtrain):
-    y = dtrain.get_label()
-    yhat = np.argmax(yhat, axis=1)
-    predicted = [LABELS[int(a)] for a in yhat]
-    actual = [LABELS[int(a)] for a in y]
-    s, _ = score_submission(actual, predicted)
-    s_perf, _ = score_submission(actual, actual)
-    score = float(s) / s_perf
-    return 'score', score
 
 def train():
 
@@ -147,13 +105,6 @@ def train():
     print(data_x, data_y, body_ids, target_stance)
     # read test data
     test_x, body_ids_test, true_y = build_test_data()
-    '''
-    commenting this out as this resulted in imbalance score
-    w = np.array([1 if y == 3 else 4 for y in data_y])
-    print('w:')
-    print(w)
-    print(np.mean(w))
-    '''
 
     print(Counter(data_y))
 
@@ -169,10 +120,11 @@ def train():
     df_test['true_y'] = true_y
     df_test['pred_y'] = df_test['pred_y'].replace([0,1,2], ['unknown','false', 'true'])
     df_test['true_y'] = df_test['true_y'].replace([0,1,2], ['unknown','false', 'true'])
-"""    print('Confusion Matrix')
-    print(confusion_matrix(df_test['true_y'],df_test['pred_y']))
-    print("F1 Score")
-    print("F1 Micro:" + f1_score(df_test['true_y'],df_test['pred_y'], average='micro'))"""
+    df_test = df_test.dropna()
+
+    print(df_test['pred_y'].value_counts())
+    print(df_test['true_y'].value_counts())
+    print(score.report_score(df_test['true_y'], df_test['pred_y']))
     """print("Confusion Matrix")
     print(report_score(true_y, pred_y))
     print("F1 Score")
@@ -180,8 +132,6 @@ def train():
 
     predicted = [LABELS[int(a)] for a in pred_y]
 
-    # save (id, predicted and probabilities) to csv, for model averaging
-    #stances = pd.read_csv("test_stances_unlabeled_processed.csv") # same row order as predicted
     stances = target_stance
 
     df_output = pd.DataFrame()
