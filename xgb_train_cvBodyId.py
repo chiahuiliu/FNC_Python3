@@ -12,7 +12,6 @@ from TfidfFeatureGenerator import *
 from SvdFeatureGenerator import *
 from Word2VecFeatureGenerator import *
 from SentimentFeatureGenerator import *
-# from AlignmentFeatureGenerator import *
 from score import *
 '''
     10-fold cv on 80% of the data (training_ids.txt)
@@ -129,7 +128,6 @@ def build_test_data():
 
     features = [f for g in generators for f in g.read("test")]
     print(len(features))
-    #return 1
 
     data_x = np.hstack(features)
     print(data_x[0,:])
@@ -159,7 +157,6 @@ def train():
                     watchlist,
                     verbose_eval=10)
 
-    #pred_y = bst.predict(dtrain) # output: label, not probabilities
     pred_prob_y = bst.predict(dtest).reshape(test_x.shape[0], 4) # predicted probabilities
     pred_y = np.argmax(pred_prob_y, axis=1)
     print('pred_y.shape:')
@@ -173,16 +170,7 @@ def train():
     df_test['true_y'] = true_y
     df_test['pred_y'] = df_test['pred_y'].replace([0,1,2], ['unknown','false', 'true'])
     df_test['true_y'] = df_test['true_y'].replace([0,1,2], ['unknown','false', 'true'])
-    '''
-    print('Confusion Matrix')
-    print(confusion_matrix(df_test['true_y'],df_test['pred_y']))
-    print("F1 Score")
-    print("F1 Micro:" + f1_score(df_test['true_y'],df_test['pred_y'], average='micro'))"""
-    """print("Confusion Matrix")
-    print(report_score(true_y, pred_y))
-    print("F1 Score")
-    print("F1 Micro:" + f1_score(true_y, pred_y, average='micro'))"""
-    '''
+
     predicted = [LABELS[int(a)] for a in pred_y]
 
     # save (id, predicted and probabilities) to csv, for model averaging
@@ -204,7 +192,6 @@ def train():
 
 if __name__ == '__main__':
 
-    #build model here and then call train
     train()
 
  #   Copyright 2017 Cisco Systems, Inc.
