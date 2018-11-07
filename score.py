@@ -8,10 +8,9 @@ RELATED = LABELS[0:3]
 
 def score_submission(gold_labels, test_labels):
     score = 0.0
-    cm = [[0, 0, 0, 0],
-          [0, 0, 0, 0],
-          [0, 0, 0, 0],
-          [0, 0, 0, 0]]
+    cm = [[0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]]
 
     for i, (g, t) in enumerate(zip(gold_labels, test_labels)):
         g_stance, t_stance = g, t
@@ -29,7 +28,7 @@ def score_submission(gold_labels, test_labels):
 
 def print_confusion_matrix(cm):
     lines = []
-    header = "|{:^11}|{:^11}|{:^11}|{:^11}|{:^11}|".format('', *LABELS)
+    header = "|{:^11}|{:^11}|{:^11}|{:^11}|".format('', *LABELS)
     line_len = len(header)
     lines.append("-"*line_len)
     lines.append(header)
@@ -40,7 +39,7 @@ def print_confusion_matrix(cm):
     for i, row in enumerate(cm):
         hit += row[i]
         total += sum(row)
-        lines.append("|{:^11}|{:^11}|{:^11}|{:^11}|{:^11}|".format(LABELS[i],
+        lines.append("|{:^11}|{:^11}|{:^11}|{:^11}|".format(LABELS[i],
                                                                    *row))
         lines.append("-"*line_len)
     print('\n'.join(lines))
