@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import sys
 import dill as pickle
 import numpy as np
