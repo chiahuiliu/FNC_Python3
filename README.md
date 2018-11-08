@@ -5,7 +5,8 @@ This is the Fall 2018 repo for the evaluation metric subproject within the Claim
 
 We're trying to do several things:
 1) Merge the Emergent dataset with the Fake News Challenge dataset (accessible through the Google doc) to generate an enhanced dataset containing article headlines, claim headline, article stance, and the veracity of the claim headline.
-2) The original evaluation metric for this task was a multi-level weighted score. After iterating on this eval metric, we decided to performing sensitivity analysis for multiple models, including xgboost, SVM (Support Vector Machine), and logistic regression. We found that there was an imbalance in the F1 score, so this semester, we'd like to further develop an evaluation metric to assess the robustness of a given model. 
+
+2) The original evaluation metric for this task was a multi-level weighted score. Upon further investigation, we found inconsistencies with this metric. Additionally, last semester, we performed sensitivity analysis for multiple models, including XGBoost, SVM, and logistic regression and found that there was an imbalance in the F1 score. We'd like to develop a more robust evaluation metric for a given model -- specifically, a model's usefulness. We can do this by first predicting article stance from a claim headline and an article headline, and then, from this predicted article stance, predict the claim's veracity. Doing so would highlight the model's ability to accurately predict article stance.
 
 ### Dev Environment
 Please download Anaconda, and create a Python 3 virtual evironment with the packages listed below. Here's a handy cheat sheet for creating and using Anaconda virtual environments:
