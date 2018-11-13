@@ -170,6 +170,13 @@ def train():
     df_test['true_y'] = true_y
     df_test['pred_y'] = df_test['pred_y'].replace([0,1,2], ['unknown','false', 'true'])
     df_test['true_y'] = df_test['true_y'].replace([0,1,2], ['unknown','false', 'true'])
+    
+    print("Confusion Matrix")
+    print(str(report_score(true_y, pred_y)))
+    print("F1 Score")
+    print("F1 Micro:" + str(f1_score(true_y, pred_y, average='micro')))
+
+
 
     predicted = [LABELS[int(a)] for a in pred_y]
 

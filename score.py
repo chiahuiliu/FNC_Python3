@@ -21,7 +21,8 @@ def score_submission(gold_labels, test_labels):
         if g_stance in RELATED and t_stance in RELATED:
             score += 0.25
 
-        cm[LABELS.index(g_stance)][LABELS.index(t_stance)] += 1
+        #cm[LABELS.index(g_stance)][LABELS.index(t_stance)] += 1
+        #cm[g_stance][t_stance] += 1
 
     return score, cm
 
