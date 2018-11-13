@@ -17,7 +17,7 @@ import score
 import joblib
 from sklearn.metrics import confusion_matrix
 
-def build_data():
+def build_data(article_stance=True):
 
     data = pd.read_csv('./data/merged_data_tain.csv', encoding='utf-8')
     used_column = ['claimHeadline', 'articleHeadline', 'claimTruthiness', 'articleStance', 'articleId']
@@ -26,9 +26,15 @@ def build_data():
     data['Headline'] = data['claimHeadline'].apply(lambda x: x[8:])
     data['articleBody'] = data['articleHeadline']
     data['Body ID'] = data['articleId']
-    targets =['unknown', 'false', 'true']
-    targets_dict = dict(zip(targets, range(len(targets))))
-    data['target'] = list(map(lambda x: targets_dict[x], data['claimTruthiness']))
+
+    if article_stance:
+        targets = ['observing', 'for', 'against', 'ignoring']
+        targets_dict = dict(zip(targets, range(len(targets))))
+        data['target'] = list(map(lambda x: targets_dict[x], data['articleStance']))
+    else:
+        targets = ['unknown', 'false', 'true']
+        targets_dict = dict(zip(targets, range(len(targets))))
+        data['target'] = list(map(lambda x: targets_dict[x], data['claimTruthiness']))
 
     train = data.sample(frac=0.6, random_state=2018)
     test = data.loc[~data.index.isin(train.index)]
@@ -57,7 +63,7 @@ def build_data():
 
     return data_x, data_y, data['Body ID'].values, test[['target', 'Headline', 'Body ID']]
 
-def build_test_data():
+def build_test_data(article_stance=True):
 
     # create target variable
     # replace file names when test data is ready
@@ -68,10 +74,15 @@ def build_test_data():
     data['Headline'] = data['claimHeadline'].apply(lambda x: x[8:])
     data['articleBody'] = data['articleHeadline']
     data['Body ID'] = data['articleId']
-    targets =['unknown', 'false', 'true']
-    targets_dict = dict(zip(targets, range(len(targets))))
-    data['target'] = list(map(lambda x: targets_dict[x], data['claimTruthiness']))
 
+    if article_stance:
+        targets = ['observing', 'for', 'against', 'ignoring']
+        targets_dict = dict(zip(targets, range(len(targets))))
+        data['target'] = list(map(lambda x: targets_dict[x], data['articleStance']))
+    else:
+        targets = ['unknown', 'false', 'true']
+        targets_dict = dict(zip(targets, range(len(targets))))
+        data['target'] = list(map(lambda x: targets_dict[x], data['claimTruthiness']))
 
     train = data.sample(frac=0.6, random_state=2018)
     test = data.loc[~data.index.isin(train.index)]
@@ -101,10 +112,12 @@ def build_test_data():
 
 def train():
 
-    data_x, data_y, body_ids, target_stance = build_data()
+    article_stance = True
+
+    data_x, data_y, body_ids, target_stance = build_data(article_stance=article_stance)
     print(data_x, data_y, body_ids, target_stance)
     # read test data
-    test_x, body_ids_test, true_y = build_test_data()
+    test_x, body_ids_test, true_y = build_test_data(article_stance=article_stance)
 
     print(Counter(data_y))
 
@@ -118,19 +131,24 @@ def train():
     df_test = pd.DataFrame()
     df_test['pred_y'] = pred_y
     df_test['true_y'] = true_y
-    df_test['pred_y'] = df_test['pred_y'].replace([0,1,2], ['unknown','false', 'true'])
-    df_test['true_y'] = df_test['true_y'].replace([0,1,2], ['unknown','false', 'true'])
-    df_test = df_test.dropna()
 
-    print(df_test['pred_y'].value_counts())
-    print(df_test['true_y'].value_counts())
-    print(score.report_score(df_test['true_y'], df_test['pred_y']))
-    """print("Confusion Matrix")
-    print(report_score(true_y, pred_y))
-    print("F1 Score")
-    print("F1 Micro:" + f1_score(true_y, pred_y, average='micro'))"""
+    if article_stance:
 
-    predicted = [LABELS[int(a)] for a in pred_y]
+        df_test['pred_y'] = df_test['pred_y'].replace([0,1,2], ['unknown','false', 'true'])
+        df_test['true_y'] = df_test['true_y'].replace([0,1,2], ['unknown','false', 'true'])
+        df_test = df_test.dropna()
+
+        print(df_test['pred_y'].value_counts())
+        print(df_test['true_y'].value_counts())
+        print(score.report_score(df_test['true_y'], df_test['pred_y']))
+        """print("Confusion Matrix")
+        print(report_score(true_y, pred_y))
+        print("F1 Score")
+        print("F1 Micro:" + f1_score(true_y, pred_y, average='micro'))"""
+
+        predicted = [LABELS[int(a)] for a in pred_y]
+    else:
+        pass
 
     stances = target_stance
 

@@ -47,7 +47,7 @@ def generate_grams(data, print_grams=False):
     print_gram(data, "tri", print_grams)
 
 # Reads the data in, builds data frame with column labels
-def process_data():
+def process_data(article_stance=True):
     full_data = pd.read_csv('./data/merged_data_tain.csv', encoding='utf-8')
     used_column = ['claimHeadline', 'articleHeadline', 'claimTruthiness', 'articleStance', 'articleId']
     
@@ -55,11 +55,16 @@ def process_data():
     full_data['Headline'] = full_data['claimHeadline'].apply(lambda x: x[8:])
     full_data['articleBody'] = full_data['articleHeadline']
     full_data['Body ID'] = full_data['articleId']
-    #targets = ['observing', 'for', 'against', 'ignoring']
-    targets = ['unknown', 'false', 'true']
-    targets_dict = dict(zip(targets, range(len(targets))))
-    #full_data['target'] = str(map(lambda x: targets_dict[x], full_data['articleStance']))
-    full_data['target'] = str(map(lambda x: targets_dict[x], full_data['claimTruthiness']))
+
+    # if we want to predict articlestance or claim_Truthiness
+    if article_stance:
+        targets = ['observing', 'for', 'against', 'ignoring']
+        targets_dict = dict(zip(targets, range(len(targets))))
+        full_data['target'] = list(map(lambda x: targets_dict[x], full_data['articleStance']))
+    else:
+        targets = ['unknown', 'false', 'true']
+        targets_dict = dict(zip(targets, range(len(targets))))
+        full_data['target'] = list(map(lambda x: targets_dict[x], full_data['claimTruthiness']))
     
     return full_data
 
