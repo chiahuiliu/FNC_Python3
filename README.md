@@ -37,6 +37,7 @@ https://drive.google.com/drive/folders/1F2RVsVsOEOyq4xUG_taNcqccm5LHH27w?usp=sha
 `SentimentFeatureGenerator.py`: Using nltk's sentiment analysis tools, this file calculates the sentiments (compound, negative, neutral, positive) for each training example and returns the probability of each sentiment from the training data.
 
 `TfidfFeatureGenerator.py`: Calculates the tfidf score (https://en.wikipedia.org/wiki/Tf%E2%80%93idf) for each claimHeadline and articleHeadline.
+Be sure to uncomment line 134 when running generateFeatures.py, and uncomment line 136 when running svm_2.py or other models.
 
 `SvdFeatureGenerator.py`: Using the similarity score calculated from tfidf and SVD (Singular Value Decomposition) from the sklearn package, this file returns the SVD vector for claimHeadlines and articleHeadlines.
 
