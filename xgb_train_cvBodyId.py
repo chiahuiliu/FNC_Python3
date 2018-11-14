@@ -58,7 +58,7 @@ def build_data(article_stance=True):
     data['Headline'] = data['claimHeadline'].apply(lambda x: x[8:])
     data['articleBody'] = data['articleHeadline']
     data['Body ID'] = data['articleId']
-    
+
     if article_stance:
         targets = ['observing', 'for', 'against', 'ignoring']
         targets_dict = dict(zip(targets, range(len(targets))))
@@ -178,17 +178,34 @@ def train():
     df_test['true_y'] = true_y
 
     if article_stance:
+
+        df_test['pred_y'] = df_test['pred_y'].replace([0,1,2,3], ['observing', 'for', 'against', 'ignoring'])
+        df_test['true_y'] = df_test['true_y'].replace([0,1,2,3], ['observing', 'for', 'against', 'ignoring'])
+        df_test = df_test.dropna()
+
+        print(df_test['pred_y'].value_counts())
+        print(df_test['true_y'].value_counts())
+
+        print(score.report_score(df_test['true_y'], df_test['pred_y'], article_stance=article_stance))
+        print("F1 Score")
+        print("F1 Micro: " + str(f1_score(true_y, pred_y, average='micro')))
+        LABELS = ['observing', 'for', 'against', 'ignoring']
+        predicted = [LABELS[int(a)] for a in pred_y]
+    else:
+
         df_test['pred_y'] = df_test['pred_y'].replace([0,1,2], ['unknown','false', 'true'])
         df_test['true_y'] = df_test['true_y'].replace([0,1,2], ['unknown','false', 'true'])
+        df_test = df_test.dropna()
 
-        print("Confusion Matrix")
-        print(str(report_score(true_y, pred_y)))
+        print(df_test['pred_y'].value_counts())
+        print(df_test['true_y'].value_counts())
+
+        print(score.report_score(df_test['true_y'], df_test['pred_y'], article_stance=article_stance))
         print("F1 Score")
-        print("F1 Micro:" + str(f1_score(true_y, pred_y, average='micro')))
-    else:
-        pass
+        print("F1 Micro: " + str(f1_score(true_y, pred_y, average='micro')))
+        LABELS = ['unknown', 'false', 'true']
+        predicted = [LABELS[int(a)] for a in pred_y]
 
-    predicted = [LABELS[int(a)] for a in pred_y]
 
     # save (id, predicted and probabilities) to csv, for model averaging
     #stances = pd.read_csv("test_stances_unlabeled_processed.csv") # same row order as predicted

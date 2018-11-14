@@ -2,64 +2,83 @@
 #Original credit - @bgalbraith
 from sklearn.metrics import f1_score
 
-LABELS = ['unknown', 'false', 'true']
-LABELS_RELATED = ['unrelated','related']
-RELATED = LABELS[0:3]
-
-def score_submission(gold_labels, test_labels):
+def score_submission(gold_labels, test_labels, article_stance):
     score = 0.0
-    cm = [[0, 0, 0],
-          [0, 0, 0],
-          [0, 0, 0]]
-
-    for i, (g, t) in enumerate(zip(gold_labels, test_labels)):
-        g_stance, t_stance = g, t
-        if g_stance == t_stance:
-            score += 0.25
-            if g_stance != 'unrelated':
-                score += 0.50
-        if g_stance in RELATED and t_stance in RELATED:
-            score += 0.25
-
-        #cm[LABELS.index(g_stance)][LABELS.index(t_stance)] += 1
-        #cm[g_stance][t_stance] += 1
+    if article_stance:
+        LABELS = ['observing', 'for', 'against', 'ignoring']
+        cm = [[0, 0, 0, 0],
+              [0, 0, 0, 0],
+              [0, 0, 0, 0],
+              [0, 0, 0, 0]]
+        for i, (g, t) in enumerate(zip(gold_labels, test_labels)):
+            g_stance, t_stance = g, t
+            if g_stance == t_stance:
+                score += 0.25
+            cm[LABELS.index(g_stance)][LABELS.index(t_stance)] += 1
+    else:
+        LABELS = ['unknown', 'false', 'true']
+        RELATED = LABELS[0:3]
+        cm = [[0, 0, 0],
+              [0, 0, 0],
+              [0, 0, 0]]
+        for i, (g, t) in enumerate(zip(gold_labels, test_labels)):
+            g_stance, t_stance = g, t
+            if g_stance == t_stance:
+                score += 0.25
+            cm[LABELS.index(g_stance)][LABELS.index(t_stance)] += 1
+            #cm[g_stance][t_stance] += 1
 
     return score, cm
 
 
-def print_confusion_matrix(cm):
+def print_confusion_matrix(cm, article_stance):
     lines = []
-    header = "|{:^11}|{:^11}|{:^11}|{:^11}|".format('', *LABELS)
-    line_len = len(header)
-    lines.append("-"*line_len)
-    lines.append(header)
-    lines.append("-"*line_len)
-
-    hit = 0
-    total = 0
-    for i, row in enumerate(cm):
-        hit += row[i]
-        total += sum(row)
-        lines.append("|{:^11}|{:^11}|{:^11}|{:^11}|".format(LABELS[i],
-                                                                   *row))
+    if article_stance:
+        LABELS = ['observing', 'for', 'against', 'ignoring']
+        header = "|{:^11}|{:^11}|{:^11}|{:^11}|".format('', *LABELS)
+        line_len = len(header)
         lines.append("-"*line_len)
-    print('\n'.join(lines))
+        lines.append(header)
+        lines.append("-"*line_len)
+
+        hit = 0
+        total = 0
+        for i, row in enumerate(cm):
+            hit += row[i]
+            total += sum(row)
+            lines.append("|{:^11}|{:^11}|{:^11}|{:^11}|".format(LABELS[i],
+                                                                       *row))
+            lines.append("-"*line_len)
+        print('\n'.join(lines))
+    else:
+        LABELS = ['unknown', 'false', 'true']
+        header = "|{:^11}|{:^11}|{:^11}|{:^11}|".format('', *LABELS)
+        line_len = len(header)
+        lines.append("-"*line_len)
+        lines.append(header)
+        lines.append("-"*line_len)
+
+        hit = 0
+        total = 0
+        for i, row in enumerate(cm):
+            hit += row[i]
+            total += sum(row)
+            lines.append("|{:^11}|{:^11}|{:^11}|{:^11}|".format(LABELS[i],
+                                                                       *row))
+            lines.append("-"*line_len)
+        print('\n'.join(lines))
 
 
-def report_score(actual,predicted):
-    score,cm = score_submission(actual,predicted)
-    best_score, _ = score_submission(actual,actual)
-
-    print_confusion_matrix(cm)
+def report_score(actual,predicted, article_stance):
+    score,cm = score_submission(actual,predicted, article_stance)
+    best_score, _ = score_submission(actual,actual, article_stance)
+    print("Confusion Matrix")
+    print_confusion_matrix(cm, article_stance)
+    print("official score")
     print("Score: " +str(score) + " out of " + str(best_score) + "\t("+str(score*100/best_score) + "%)")
     return score*100/best_score
 
 
-if __name__ == "__main__":
-    actual = [0,0,0,0,1,1,0,3,3]
-    predicted = [0,0,0,0,1,1,2,3,3]
-
-    report_score([LABELS[e] for e in actual],[LABELS[e] for e in predicted])
  #   Copyright 2017 Cisco Systems, Inc.
  #
  #   Licensed under the Apache License, Version 2.0 (the "License");

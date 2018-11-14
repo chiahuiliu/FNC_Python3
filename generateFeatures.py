@@ -2,7 +2,7 @@
 
 '''
 This file serves as the driver for data preprocessing
-as well as feature extraction. 
+as well as feature extraction.
 '''
 
 import nltk
@@ -34,7 +34,7 @@ def generate_grams(data, print_grams=False):
     data["Headline_unigram"] = data["Headline"].map(lambda x: (list(nltk.word_tokenize(x))))
     data["articleBody_unigram"] = data["articleBody"].map(lambda x: (list(nltk.word_tokenize(x))))
     print_gram(data, "uni", print_grams)
-    
+
     print("Generating bigrams...")
     data["Headline_bigram"] = data["Headline_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x,2)])
     data["articleBody_bigram"] = data["articleBody_unigram"].map(lambda x: [ ' '.join(grams) for grams in ngrams(x,2)])
@@ -50,7 +50,7 @@ def generate_grams(data, print_grams=False):
 def process_data(article_stance=True):
     full_data = pd.read_csv('./data/merged_data_tain.csv', encoding='utf-8')
     used_column = ['claimHeadline', 'articleHeadline', 'claimTruthiness', 'articleStance', 'articleId']
-    
+
     full_data = full_data[used_column].dropna()
     full_data['Headline'] = full_data['claimHeadline'].apply(lambda x: x[8:])
     full_data['articleBody'] = full_data['articleHeadline']
@@ -65,14 +65,14 @@ def process_data(article_stance=True):
         targets = ['unknown', 'false', 'true']
         targets_dict = dict(zip(targets, range(len(targets))))
         full_data['target'] = list(map(lambda x: targets_dict[x], full_data['claimTruthiness']))
-    
+
     return full_data
 
 
 def process():
 
-    full_data = process_data()
-    
+    full_data = process_data(article_stance=True)
+
     train = full_data.sample(frac=0.6, random_state=2018)
     test = full_data.loc[~full_data.index.isin(train.index)]
 
@@ -84,15 +84,15 @@ def process():
     if test_flag:
         print('data.shape: ' + str(data.shape))
         print(data)
-        
+
         print('train.shape: ' + str(train.shape))
         print(train)
 
         print('test.shape: ' + str(test.shape))
         print(test)
-    
+
     generate_grams(data, print_grams=False)
-    
+
     with open('data.pkl', 'wb') as outfile:
         pickle.dump(data, outfile)
         print('dataframe saved in data.pkl')
