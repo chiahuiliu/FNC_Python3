@@ -1,13 +1,26 @@
-# claim_checking_Fall2018
-This is the Fall 2018 repo for the evaluation metric subproject within the Claim Checking Group at UT Austin.
+# Python 3 Implementation of FNC Winning Solution
 
-### Problem Statement
+## Problem Statement
+(Taken from http://www.fakenewschallenge.org)
+The goal of the Fake News Challenge Competition is to explore how machine learning and artificial intelligence technologies might be leveraged to combat the fake news problem. A helpful first step towards identifying fake news is to understand what other news organizations are saying about the topic. We believe automating this process, called Stance Detection, could serve as a useful building block in an AI-assisted fact-checking pipeline. 
 
-We're trying to do several things:
-1) Merge the Emergent dataset with the Fake News Challenge dataset (accessible through the Google doc) to generate an enhanced dataset containing article headlines, claim headline, article stance, and the veracity of the claim headline.
+## Dataset
+The Fake News Challenge competition provided a dataset to participants. It was a subset of the Emergent dataset (http://www.aclweb.org/anthology/N16-1138), with an extra field -- article stance. We merged these two datasets (accessible here: https://tinyurl.com/yb5ldtf3) to generate an enhanced dataset containing article headlines, claim, article stance, and claim veracity.
 
-2) The original evaluation metric for this task was a multi-level weighted score. Upon further investigation, we found inconsistencies with this metric. Additionally, last semester, we performed sensitivity analysis for multiple models, including XGBoost, SVM, and logistic regression and found that there was an imbalance in the F1 score. We'd like to develop a more robust evaluation metric for a given model -- specifically, a model's usefulness. We can do this by first predicting article stance from a claim headline and an article headline, and then, from this predicted article stance, predict the claim's veracity. Doing so would highlight the model's ability to accurately predict article stance.
+## Feature Explanation
+We refactored the FNC Winning Team's tree solution (available here in Python 2: https://github.com/Cisco-Talos/fnc-1) as well as added an simple SVM classifier as our two baseline models. Read more about their feature engineering in their repository README. Here's a basic explanation of each of the features used:
 
+CountFeatureGenerator: Count occurrences of selected words in the data files
+
+SentimentFeatureGenerator: Using nltk's sentiment analysis tools, this file calculates the sentiments (compound, negative, neutral, positive) for each training example and returns the probability of each sentiment from the training data.
+
+TfidfFeatureGenerator: Calculates the tfidf score (https://en.wikipedia.org/wiki/Tf%E2%80%93idf) for each claimHeadline and articleHeadline.
+
+SvdFeatureGenerator: Using the similarity score calculated from tfidf and SVD (Singular Value Decomposition) from the sklearn package, this file returns the SVD vector for claimHeadlines and articleHeadlines.
+
+Word2VecFeatureGenerator: This file returns the Word2Vec (https://en.wikipedia.org/wiki/Word2vec) representation from the claimHeadline and articleHeadline as well as the cosine similarity vectors between each articleHeadline and claimHeadline.
+
+## Implementation Guide + Instructions
 ### Dev Environment
 Please download Anaconda, and create a Python 3 virtual evironment with the packages listed below. Here's a handy cheat sheet for creating and using Anaconda virtual environments:
 https://conda.io/docs/_downloads/conda-cheatsheet.pdf
@@ -19,10 +32,7 @@ https://conda.io/docs/_downloads/conda-cheatsheet.pdf
 - numpy
 - ngram
 
-### For data, please download the data here
-https://drive.google.com/drive/folders/1F2RVsVsOEOyq4xUG_taNcqccm5LHH27w?usp=sharing
-
-### Code Flow Image
+### Feature Generator Code Flow
 <img src="https://github.com/chiahuiliu/claim_checking_Fall2018/blob/feature_generation/claim_check_codeFlow.png"/>
 
 ### File explanations
@@ -45,8 +55,8 @@ Be sure to uncomment line 134 when running generateFeatures.py, and uncomment li
 
 `generateFeatures.py`: Driver for feature generation. Calculates the unigram, bigram, and trigram features, and also generates the features from files listed above.
 
-*Use `merged_data_tain.csv` for training!!!
-#### Columns in merged_data_tain.csv
+*Use `merged_data_train.csv` for training!!!
+#### Columns in merged_data_train.csv
 - claimId: The unique sequence number for the claim
 - claimHeadline: the textual content of the claim
 - articleId: the unique sequence number for the article corresponding to the claim
@@ -54,3 +64,23 @@ Be sure to uncomment line 134 when running generateFeatures.py, and uncomment li
 (p.s one claim may have more than one article)
 - claimTruthiness: the TRUE stance for the claim
 - articleStance: the stance of the article
+
+## Models
+
+### Gradient Boosted Decision Tree Model
+For xgboost documentation, refer to this: https://xgboost.readthedocs.io/en/latest/
+For an explanation of the GBDT model, read this: https://xgboost.readthedocs.io/en/latest/tutorials/model.html
+
+The main file for this model is `xgb_train_cvBodyId.py`. The parameters are set from line 23-34, we've modified the parameters in the subsequent 10 lines. Refer to the file for commented instructions.
+
+### SVM Model
+For SVM sklearn documentation/model explanation, refer to this: https://scikit-learn.org/stable/modules/svm.html.
+
+The main file for this model is `svm_2.py`. The parameters are set in the main function. Again, refer to the file for commented instructions.
+
+### Evaluation Metric
+
+The original evaluation metric for this task was a multi-level weighted score. Upon further investigation, we found inconsistencies with this metric. Read more about these inconsistencies in this paper (https://arxiv.org/pdf/1806.05180.pdf). 
+We performed sensitivity analysis for multiple models, including the XGBoost, SVM, and logistic regression models, and found that there was an imbalance in the F1 score. The paper highlights other evaluation metrics as well.
+
+The main file for model evaluation is `score.py`. Upon running it, it will print an F1 score as well as a confusion matrix.
