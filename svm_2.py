@@ -17,9 +17,16 @@ import score
 import joblib
 from sklearn.metrics import confusion_matrix
 
+
+'''
+This function reads the training data file, converts the stances to categorical 
+variables, takes 60% of the training data for cross validation, and generates features 
+using the FeatureGenerator files.
+'''
 def build_data():
 
-    data = pd.read_csv('./data/merged_data_tain.csv', encoding='utf-8')
+    # read training data file
+    data = pd.read_csv('./data/merged_data_train.csv', encoding='utf-8')
     used_column = ['claimHeadline', 'articleHeadline', 'claimTruthiness', 'articleStance', 'articleId']
 
     data = data[used_column].dropna()
@@ -35,7 +42,7 @@ def build_data():
 
     data_y = train['target'].values
 
-    # read features
+    # generate features
     generators = [
                   CountFeatureGenerator(),
                   TfidfFeatureGenerator(),
@@ -45,6 +52,7 @@ def build_data():
                  ]
     features = [f for g in generators for f in g.read('train')]
 
+    # print data shapes
     data_x = (np.hstack(features))
     print(data_x[0,:])
     print('data_x.shape')
@@ -57,11 +65,14 @@ def build_data():
 
     return data_x, data_y, data['Body ID'].values, test[['target', 'Headline', 'Body ID']]
 
+'''
+Basically the same as build_data, but for test data
+'''
 def build_test_data():
 
     # create target variable
     # replace file names when test data is ready
-    data = pd.read_csv('./data/merged_data_tain.csv', encoding='utf-8')
+    data = pd.read_csv('./data/merged_data_train.csv', encoding='utf-8')
     used_column = ['claimHeadline', 'articleHeadline', 'claimTruthiness', 'articleStance', 'articleId']
 
     data = data[used_column].dropna()
@@ -108,13 +119,14 @@ def train():
 
     print(Counter(data_y))
 
+    # create the SVM model, generating pickle file
     bst = svm_FNC.fit(data_x, data_y)
     joblib.dump(bst, 'svm_cluster_train.pkl')
 
     pred_y = bst.predict(test_x)
     print(len(pred_y))
     print("------------------------------------")
-    # add encoding
+    # add encoding and diplay evaluation
     df_test = pd.DataFrame()
     df_test['pred_y'] = pred_y
     df_test['true_y'] = true_y
@@ -124,11 +136,8 @@ def train():
 
     print(df_test['pred_y'].value_counts())
     print(df_test['true_y'].value_counts())
+
     print(score.report_score(df_test['true_y'], df_test['pred_y']))
-    """print("Confusion Matrix")
-    print(report_score(true_y, pred_y))
-    print("F1 Score")
-    print("F1 Micro:" + f1_score(true_y, pred_y, average='micro'))"""
 
     predicted = [LABELS[int(a)] for a in pred_y]
 
@@ -139,8 +148,6 @@ def train():
     df_output['Body ID'] = stances['Body ID']
 
     df_output['Stance'] = predicted
-
-    #df_output.to_csv('submission.csv', index=False)
     df_output.to_csv('tree_pred_prob_cor2.csv', index=False)
     df_output[['Headline','Body ID','Stance']].to_csv('tree_pred_cor2.csv', index=False)
 

@@ -6,9 +6,10 @@ from nltk.tokenize import sent_tokenize
 from helpers import *
 import hashlib
 
-
+'''
+Count occurrences of selected words in the data files.
+'''
 class CountFeatureGenerator(FeatureGenerator):
-
 
     def __init__(self, name='countFeatureGenerator'):
         super(CountFeatureGenerator, self).__init__(name)
@@ -88,24 +89,13 @@ class CountFeatureGenerator(FeatureGenerator):
             'unconfirmed'
         ]
 
-        #df['refuting_words_in_headline'] = df['Headline'].map(lambda x: 1 if w in x else 0 for w in _refuting_words)
-        #df['hedging_words_in_headline'] = df['Headline'].map(lambda x: 1 if w in x else 0 for w in _refuting_words)
-        #check_words = _refuting_words + _hedging_seed_words
         check_words = _refuting_words
         for rf in check_words:
             fname = '%s_exist' % rf
             feat_names.append(fname)
             df[fname] = df['Headline'].map(lambda x: 1 if rf in x else 0)
 
-        # number of body texts paired up with the same headline
-        #df['headline_hash'] = df['Headline'].map(lambda x: hashlib.md5(x).hexdigest())
-        #nb_dict = df.groupby(['headline_hash'])['Body ID'].nunique().to_dict()
-        #df['n_bodies'] = df['headline_hash'].map(lambda x: nb_dict[x])
-        #feat_names.append('n_bodies')
-        # number of headlines paired up with the same body text
-        #nh_dict = df.groupby(['Body ID'])['headline_hash'].nunique().to_dict()
-        #df['n_headlines'] = df['Body ID'].map(lambda x: nh_dict[x])
-        #feat_names.append('n_headlines')
+
         print('BasicCountFeatures:')
         print(df)
         train = df.sample(frac=0.6, random_state=2018)
@@ -115,8 +105,7 @@ class CountFeatureGenerator(FeatureGenerator):
         n_test = test.shape[0]
         print('tfidf, n_test:',n_test)
 
-        # split into train, test portion and save in separate files
-        #train = df[~df['target'].isnull()]
+
         print('train:')
         print(train[['Headline_unigram','Body ID', 'count_of_Headline_unigram']])
         xBasicCountsTrain = train[feat_names].values
@@ -126,10 +115,9 @@ class CountFeatureGenerator(FeatureGenerator):
             pickle.dump(xBasicCountsTrain, outfile, -1)
         print('basic counting features for training saved in %s' % outfilename_bcf_train)
 
-        #test = df[df['target'].isnull()]
         print('test:')
         print(test[['Headline_unigram','Body ID', 'count_of_Headline_unigram']])
-        #return 1
+
         if test.shape[0] > 0:
             # test set exists
             print('saving test set')

@@ -49,9 +49,15 @@ params_xgb = {
 
 num_round = 1000
 
+
+'''
+This function reads the training data file, converts the stances to categorical 
+variables, takes 60% of the training data for cross validation, and generates features 
+using the FeatureGenerator files.
+'''
 def build_data():
 
-    data = pd.read_csv('./data/merged_data_tain.csv', encoding='utf-8')
+    data = pd.read_csv('./data/merged_data_train.csv', encoding='utf-8')
     used_column = ['claimHeadline', 'articleHeadline', 'claimTruthiness', 'articleStance', 'articleId']
 
     data = data[used_column].dropna()
@@ -69,7 +75,7 @@ def build_data():
 
     data_y = train['target'].values
 
-    # read features
+    # generate features
     generators = [
                   CountFeatureGenerator(),
                   TfidfFeatureGenerator(),
@@ -80,6 +86,7 @@ def build_data():
                  ]
     features = [f for g in generators for f in g.read('train')]
 
+    # print data shape
     data_x = (np.hstack(features))
     print(data_x[0,:])
     print('data_x.shape')
@@ -92,11 +99,14 @@ def build_data():
 
     return data_x, data_y, data['Body ID'].values, test[['target', 'Headline', 'Body ID']]
 
+'''
+Basically the same as build_data, but for test data
+'''
 def build_test_data():
 
     # create target variable
     # replace file names when test data is ready
-    data = pd.read_csv('./data/merged_data_tain.csv', encoding='utf-8')
+    data = pd.read_csv('./data/merged_data_train.csv', encoding='utf-8')
     used_column = ['claimHeadline', 'articleHeadline', 'claimTruthiness', 'articleStance', 'articleId']
 
     data = data[used_column].dropna()
@@ -112,12 +122,7 @@ def build_test_data():
     train = data.sample(frac=0.6, random_state=2018)
     test = data.loc[~data.index.isin(train.index)]
 
-    '''
-    body = pd.read_csv("test_bodies.csv")
-    stances = pd.read_csv("test_stances_unlabeled.csv") # needs to contain pair id
-    data = pd.merge(stances, body, how='left', on='Body ID')
-    '''
-    # read features
+    # generate features
     generators = [
                   CountFeatureGenerator(),
                   TfidfFeatureGenerator(),
@@ -179,9 +184,6 @@ def train():
 
 
     predicted = [LABELS[int(a)] for a in pred_y]
-
-    # save (id, predicted and probabilities) to csv, for model averaging
-    #stances = pd.read_csv("test_stances_unlabeled_processed.csv") # same row order as predicted
     stances = target_stance
 
     df_output = pd.DataFrame()
@@ -190,7 +192,6 @@ def train():
 
     df_output['Stance'] = predicted
 
-    #df_output.to_csv('submission.csv', index=False)
     df_output.to_csv('tree_pred_prob_cor2.csv', index=False)
     df_output[['Headline','Body ID','Stance']].to_csv('tree_pred_cor2.csv', index=False)
 
