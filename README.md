@@ -26,11 +26,13 @@ Please download Anaconda, and create a Python 3 virtual evironment with the pack
 https://conda.io/docs/_downloads/conda-cheatsheet.pdf
 
 ### Prerequisite Packages
+Type `pip install -r rquirement.txt` to install all the required packages.
 - dill
 - nltk
 - pandas
 - numpy
 - ngram
+- Please download GoogleNews-vectors-negative300.bin in order to be able to successfully run the code.
 
 ### Feature Generator Code Flow
 <img src="https://github.com/chiahuiliu/claim_checking_Fall2018/blob/feature_generation/claim_check_codeFlow.png"/>
