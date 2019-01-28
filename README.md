@@ -1,7 +1,7 @@
 # Python 3 Implementation of FNC Winning Solution
 
 ## Problem Statement
-(Taken from http://www.fakenewschallenge.org)
+(Taken from http://www.fakenewschallenge.org)  
 The goal of the Fake News Challenge Competition is to explore how machine learning and artificial intelligence technologies might be leveraged to combat the fake news problem. A helpful first step towards identifying fake news is to understand what other news organizations are saying about the topic. We believe automating this process, called Stance Detection, could serve as a useful building block in an AI-assisted fact-checking pipeline. 
 
 ## Dataset
@@ -10,15 +10,15 @@ The Fake News Challenge competition provided a dataset to participants. It was a
 ## Feature Explanation
 We refactored the FNC Winning Team's tree solution (available here in Python 2: https://github.com/Cisco-Talos/fnc-1) as well as added an simple SVM classifier as our two baseline models. Read more about their feature engineering in their repository README. Here's a basic explanation of each of the features used:
 
-CountFeatureGenerator: Count occurrences of selected words in the data files
+CountFeatureGenerator: Count occurrences of selected words in the data files  
 
-SentimentFeatureGenerator: Using nltk's sentiment analysis tools, this file calculates the sentiments (compound, negative, neutral, positive) for each training example and returns the probability of each sentiment from the training data.
+SentimentFeatureGenerator: Using nltk's sentiment analysis tools, this file calculates the sentiments (compound, negative, neutral, positive) for each training example and returns the probability of each sentiment from the training data.  
 
-TfidfFeatureGenerator: Calculates the tfidf score (https://en.wikipedia.org/wiki/Tf%E2%80%93idf) for each claimHeadline and articleHeadline.
+TfidfFeatureGenerator: Calculates the tfidf score (https://en.wikipedia.org/wiki/Tf%E2%80%93idf) for each claimHeadline and articleHeadline.   
 
-SvdFeatureGenerator: Using the similarity score calculated from tfidf and SVD (Singular Value Decomposition) from the sklearn package, this file returns the SVD vector for claimHeadlines and articleHeadlines.
+SvdFeatureGenerator: Using the similarity score calculated from tfidf and SVD (Singular Value Decomposition) from the sklearn package, this file returns the SVD vector for claimHeadlines and articleHeadlines.  
 
-Word2VecFeatureGenerator: This file returns the Word2Vec (https://en.wikipedia.org/wiki/Word2vec) representation from the claimHeadline and articleHeadline as well as the cosine similarity vectors between each articleHeadline and claimHeadline.
+Word2VecFeatureGenerator: This file returns the Word2Vec (https://en.wikipedia.org/wiki/Word2vec) representation from the claimHeadline and articleHeadline as well as the cosine similarity vectors between each articleHeadline and claimHeadline.  
 
 ## Implementation Guide + Instructions
 ### Dev Environment
@@ -70,19 +70,19 @@ Be sure to uncomment line 134 when running generateFeatures.py, and uncomment li
 ## Models
 
 ### Gradient Boosted Decision Tree Model
-For xgboost documentation, refer to this: https://xgboost.readthedocs.io/en/latest/
-For an explanation of the GBDT model, read this: https://xgboost.readthedocs.io/en/latest/tutorials/model.html
+For xgboost documentation, refer to this: https://xgboost.readthedocs.io/en/latest/  
+For an explanation of the GBDT model, read this: https://xgboost.readthedocs.io/en/latest/tutorials/model.html  
 
-The main file for this model is `xgb_train_cvBodyId.py`. The parameters are set from line 23-34, we've modified the parameters in the subsequent 10 lines. Refer to the file for commented instructions.
+The main file for this model is `xgb_train_cvBodyId.py`. The parameters are set from line 23-34, we've modified the parameters in the subsequent 10 lines. Refer to the file for commented instructions.  
 
 ### SVM Model
-For SVM sklearn documentation/model explanation, refer to this: https://scikit-learn.org/stable/modules/svm.html.
+For SVM sklearn documentation/model explanation, refer to this: https://scikit-learn.org/stable/modules/svm.html.  
 
-The main file for this model is `svm_2.py`. The parameters are set in the main function. Again, refer to the file for commented instructions.
+The main file for this model is `svm_2.py`. The parameters are set in the main function. Again, refer to the file for commented instructions.  
 
 ### Evaluation Metric
 
 The original evaluation metric for this task was a multi-level weighted score. Upon further investigation, we found inconsistencies with this metric. Read more about these inconsistencies in this paper (https://arxiv.org/pdf/1806.05180.pdf). 
-We performed sensitivity analysis for multiple models, including the XGBoost, SVM, and logistic regression models, and found that there was an imbalance in the F1 score. The paper highlights other evaluation metrics as well.
+We performed sensitivity analysis for multiple models, including the XGBoost, SVM, and logistic regression models, and found that there was an imbalance in the F1 score. The paper highlights other evaluation metrics as well.  
 
 The main file for model evaluation is `score.py`. Upon running it, it will print an F1 score as well as a confusion matrix.
