@@ -1,4 +1,4 @@
-# Python 3 Implementation of FNC Winning Solution
+# Updated/Augmented Implementation of FNC Winning Solution
 
 ## Problem Statement
 (Taken from http://www.fakenewschallenge.org)  
