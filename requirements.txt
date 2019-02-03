@@ -3,3 +3,5 @@ dill
 nltk
 sklearn
 numpy
+xgboost
+ngram
