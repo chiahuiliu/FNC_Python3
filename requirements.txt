@@ -5,3 +5,5 @@ sklearn
 numpy
 xgboost
 ngram
+gensim
+joblib
