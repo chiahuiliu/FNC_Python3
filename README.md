@@ -32,7 +32,7 @@ Type `pip install -r rquirement.txt` to install all the required packages.
 - pandas
 - numpy
 - ngram
-
+- xgboost
 - Please download GoogleNews-vectors-negative300.bin in order to be able to successfully run the code.
 
 ### Feature Generator Code Flow
