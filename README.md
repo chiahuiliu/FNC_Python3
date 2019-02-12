@@ -23,7 +23,7 @@ Word2VecFeatureGenerator: This file returns the Word2Vec (https://en.wikipedia.o
 ## Implementation Guide + Instructions
 ### Dev Environment
 Please download Anaconda, and create a Python 3 virtual evironment with the packages listed below. Here's a handy cheat sheet for creating and using Anaconda virtual environments:
-https://conda.io/docs/_downloads/conda-cheatsheet.pdf
+http://know.continuum.io/rs/387-XNW-688/images/conda-cheatsheet.pdf
 
 ### Prerequisite Packages
 Type `pip install -r requirement.txt` to install all the required packages.
