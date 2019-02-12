@@ -26,7 +26,7 @@ Please download Anaconda, and create a Python 3 virtual evironment with the pack
 https://conda.io/docs/_downloads/conda-cheatsheet.pdf
 
 ### Prerequisite Packages
-Type `pip install -r rquirement.txt` to install all the required packages.
+Type `pip install -r requirement.txt` to install all the required packages.
 - dill
 - nltk
 - pandas
