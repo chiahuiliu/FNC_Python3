@@ -36,7 +36,7 @@ Type `pip install -r requirement.txt` to install all the required packages.
 - Please download GoogleNews-vectors-negative300.bin in order to be able to successfully run the code.
 
 ### Feature Generator Code Flow
-<img src="https://github.com/chiahuiliu/claim_checking_Fall2018/blob/feature_generation/claim_check_codeFlow.png"/>
+<img src="./claim_check_codeFlow.png"/>
 
 ### File explanations
 `merge_csv.py`: merge all the test & training data from the fake news challenge dataset, and then merge it with the Emergent dataset.
@@ -87,3 +87,9 @@ The original evaluation metric for this task was a multi-level weighted score. U
 We performed sensitivity analysis for multiple models, including the XGBoost, SVM, and logistic regression models, and found that there was an imbalance in the F1 score. The paper highlights other evaluation metrics as well.  
 
 The main file for model evaluation is `score.py`. Upon running it, it will print an F1 score as well as a confusion matrix.
+
+### Other Fake News Challenge Github repo
+- [SOLAT in the SWEN](https://github.com/Cisco-Talos/fnc-1): The winning solution with both deep learning and decision model.
+- [Athene (UKP Lab)](https://github.com/hanselowski/athene_system)
+- [UCL Machine Reading](https://github.com/uclmr/fakenewschallenge)
+- [Fake News Challenge Baseline](https://github.com/FakeNewsChallenge/fnc-1-baseline): The basedline for the competition
